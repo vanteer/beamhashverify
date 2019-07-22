@@ -1,4 +1,4 @@
-# Equihash - Zcash Implementation
+# Equihash - BeamHash Implementation
 nodejs native binding to check for valid Equihash solutions
 
 # Dependencies
