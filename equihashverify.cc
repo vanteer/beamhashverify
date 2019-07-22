@@ -3,7 +3,7 @@
 #include <node_buffer.h>
 #include <v8.h>
 #include <stdint.h>
-#include "crypto/equihash.h"
+#include "crypto/equihashR.h"
 #include "beam/core/difficulty.h"
 #include "beam/core/uintBig.h"
 
@@ -12,18 +12,20 @@
 #include <vector>
 using namespace v8;
 
-int verifyEH(const char *hdr, const char *nonceBuffer, const std::vector<unsigned char> &soln, unsigned int n = 150, unsigned int k = 5){
+int verifyEH(const char *hdr, const char *nonceBuffer, const std::vector<unsigned char> &soln, unsigned int n = 150, unsigned int k = 5, unsigned int r = 0){
 
   eh_HashState state;
-  EhInitialiseState(n, k, state);
+  EhRInitialiseState(n, k, r, state);
   blake2b_update(&state, (const unsigned char *)hdr, 32);
   blake2b_update(&state, (const unsigned char *)nonceBuffer, 8);
 
   bool isValid;
-  if (n == 150 && k == 5) {
-      isValid = Eh150_5.IsValidSolution(state, soln);
+  if (n == 150 && k == 5 && r == 0) {
+    isValid = BeamHashI.IsValidSolution(state, soln);
+  } else if (n == 150 && k == 5 && r == 3) {
+    isValid = BeamHashII.IsValidSolution(state, soln);
   } else {
-      throw std::invalid_argument("Unsupported Equihash parameters");
+    throw std::invalid_argument("Unsupported Equihash parameters");
   }
   return isValid;
 }
@@ -34,6 +36,7 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
 
   unsigned int n = 150;
   unsigned int k = 5;
+  unsigned int r = 0;
 
   if (args.Length() < 3) {
   isolate->ThrowException(Exception::TypeError(
@@ -45,9 +48,10 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
   Local<Object> nonce = args[1]->ToObject();
   Local<Object> solution = args[2]->ToObject();
 
-  if (args.Length() == 5) {
+  if (args.Length() == 6) {
     n = args[3]->Uint32Value();
     k = args[4]->Uint32Value();
+    r = args[5]->Uint32Value();
   }
 
   if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution) || !node::Buffer::HasInstance(nonce) ) {
@@ -67,7 +71,7 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
 
   std::vector<unsigned char> vecSolution(soln, soln + node::Buffer::Length(solution));
 
-  bool result = verifyEH(hdr, nonceBuffer, vecSolution, n, k);
+  bool result = verifyEH(hdr, nonceBuffer, vecSolution, n, k, r);
   args.GetReturnValue().Set(result);
 
 }

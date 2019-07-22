@@ -13,7 +13,7 @@ var ev = require('bindings')('equihashverify.node');
 var header = new Buffer(..., 'hex');
 var solution = new Buffer(..., 'hex'); //do not include byte size preamble "fd4005"
 
-ev.verify(header, nonce, solution, n, k);
+ev.verify(header, nonce, solution, n, k, r); // default is BeamHashI 150/5/0
 //returns boolean
 ````
 
