@@ -3,6 +3,7 @@
 #include <node_buffer.h>
 #include <v8.h>
 #include <stdint.h>
+#include "crypto/beamHashIII.h"
 #include "crypto/equihashR.h"
 #include "beam/core/difficulty.h"
 #include "beam/core/uintBig.h"
@@ -12,21 +13,36 @@
 #include <vector>
 using namespace v8;
 
-int verifyEH(const char *hdr, const char *nonceBuffer, const std::vector<unsigned char> &soln, unsigned int n = 150, unsigned int k = 5, unsigned int r = 0){
+int verifyBH(const char *hdr, const char *nonceBuffer, const std::vector<unsigned char> &soln, unsigned int pow = 0){
 
   eh_HashState state;
-  EhRInitialiseState(n, k, r, state);
+  
+  switch (pow) {
+  	case 0:   BeamHashI.InitialiseState(state);
+  		  break;
+  	case 1:   BeamHashII.InitialiseState(state);
+  		  break;
+  	case 2:   BeamHashIII.InitialiseState(state);
+  		  break;
+  	default: 
+  		throw std::invalid_argument("Unsupported PoW Parameter");
+  }
+  
+
   blake2b_update(&state, (const unsigned char *)hdr, 32);
   blake2b_update(&state, (const unsigned char *)nonceBuffer, 8);
-
-  bool isValid;
-  if (n == 150 && k == 5 && r == 0) {
-    isValid = BeamHashI.IsValidSolution(state, soln);
-  } else if (n == 150 && k == 5 && r == 3) {
-    isValid = BeamHashII.IsValidSolution(state, soln);
-  } else {
-    throw std::invalid_argument("Unsupported Equihash parameters");
+  
+  switch (pow) {
+  	case 0:   BeamHashI.IsValidSolution(state, soln);
+  		  break;
+  	case 1:   BeamHashII.IsValidSolution(state, soln);
+  		  break;
+  	case 2:   BeamHashIII.IsValidSolution(state, soln);
+  		  break;
+  	default: 
+  		throw std::invalid_argument("Unsupported PoW Parameter");
   }
+
   return isValid;
 }
 
@@ -34,9 +50,8 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   HandleScope scope(isolate);
 
-  unsigned int n = 150;
-  unsigned int k = 5;
-  unsigned int r = 0;
+  // Default to Beam Hash III
+  unsigned int PoW = 2;
 
   if (args.Length() < 3) {
   isolate->ThrowException(Exception::TypeError(
@@ -48,10 +63,8 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
   Local<Object> nonce = args[1]->ToObject();
   Local<Object> solution = args[2]->ToObject();
 
-  if (args.Length() == 6) {
-    n = args[3]->Uint32Value();
-    k = args[4]->Uint32Value();
-    r = args[5]->Uint32Value();
+  if (args.Length() == 4) {
+    PoW = args[3]->Uint32Value();
   }
 
   if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution) || !node::Buffer::HasInstance(nonce) ) {
@@ -71,7 +84,7 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
 
   std::vector<unsigned char> vecSolution(soln, soln + node::Buffer::Length(solution));
 
-  bool result = verifyEH(hdr, nonceBuffer, vecSolution, n, k, r);
+  bool result = verifyBH(hdr, nonceBuffer, vecSolution, PoW);
   args.GetReturnValue().Set(result);
 
 }
@@ -113,4 +126,4 @@ void Init(Handle<Object> exports)
   NODE_SET_METHOD(exports, "verifyDiff", VerifyDiff);
 }
 
-NODE_MODULE(equihashverify, Init)
+NODE_MODULE(beamhashverify, Init)

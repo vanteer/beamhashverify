@@ -1,20 +1,20 @@
 {
-  "name": "equihashverify",
+  "name": "beamhashverify",
   "version": "1.0.0",
   "description": "function to check whether BeamHash solution is valid",
-  "main": "equihashverify",
+  "main": "beamhashverify",
   "scripts": {
     "install": "env V=1 node-gyp rebuild",
     "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mmitech/equihashverify"
+    "url": "https://github.com/Lolliedieb/beamhashverify"
   },
   "keywords": [
     "Beam"
   ],
-  "author": "Joseph Nicholas R. Alcantara",
+  "author": "Wilke Trei",
   "contributors": [
     "Alberto Garoffolo",
     "cronic",
@@ -23,9 +23,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mmitech/equihashverify/issues"
+    "url": "https://github.com/Lolliedieb/beamhashverify/issues"
   },
-  "homepage": "https://github.com/mmitech/equihashverify",
+  "homepage": "https://github.com/Lolliedieb/beamhashverify",
   "dependencies": {
     "bindings": "*",
     "libsodium": "^0.7.3",

@@ -1,7 +1,7 @@
 {
     "targets": [
         {
-            "target_name": "equihashverify",
+            "target_name": "beamhashverify",
             "dependencies": [
 
             ],
@@ -12,12 +12,13 @@
                 "random.cpp",
                 "util.cpp",
                 "utilstrencodings.cpp",
-                "crypto/equihash.cpp",
+                "crypto/equihashR_impl.cpp",
+                "crypto/beamHashIII_impl.cpp",
                 "beam/core/difficulty.cpp",
                 "beam/core/uintBig.cpp",
                 "beam/utility/common.cpp",
                 "crypto/blake/sse/blake2b.cpp",
-                "equihashverify.cc"
+                "beamhashverify.cc"
             ],
             "include_dirs": [
                 "<!(node -e \"require('nan')\")",
