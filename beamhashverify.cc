@@ -32,12 +32,13 @@ int verifyBH(const char *hdr, const char *nonceBuffer, const std::vector<unsigne
   blake2b_update(&state, (const unsigned char *)hdr, 32);
   blake2b_update(&state, (const unsigned char *)nonceBuffer, 8);
   
+  bool isValid;
   switch (pow) {
-  	case 0:   BeamHashI.IsValidSolution(state, soln);
+  	case 0:   isValid = BeamHashI.IsValidSolution(state, soln);
   		  break;
-  	case 1:   BeamHashII.IsValidSolution(state, soln);
+  	case 1:   isValid = BeamHashII.IsValidSolution(state, soln);
   		  break;
-  	case 2:   BeamHashIII.IsValidSolution(state, soln);
+  	case 2:   isValid = BeamHashIII.IsValidSolution(state, soln);
   		  break;
   	default: 
   		throw std::invalid_argument("Unsupported PoW Parameter");

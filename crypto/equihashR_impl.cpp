@@ -13,7 +13,7 @@
 // NDSS ’16, 21-24 February 2016, San Diego, CA, USA
 // https://www.internetsociety.org/sites/default/files/blogs-media/equihash-asymmetric-proof-of-work-based-generalized-birthday-problem.pdf
 
-#include "compat/endian.h"
+//#include "compat/endian.h"
 #include "crypto/equihashR.h"
 //#include "util.h"
 
@@ -26,7 +26,7 @@ SolverCancelledException solver_cancelled;
 
 namespace
 {
-    constexpr void ZeroizeUnusedBits(size_t N, size_t R, unsigned char* hash, size_t hLen)
+    void ZeroizeUnusedBits(size_t N, size_t R, unsigned char* hash, size_t hLen)
     {
         uint8_t rem = N % 8;
 	const size_t step = GetSizeInBytes(N);

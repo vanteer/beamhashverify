@@ -270,9 +270,9 @@ bool BeamHash_III::IsValidSolution(const blake2b_state& base_state, std::vector<
 	return X[0].isZero();	
 }
 
-
+#ifdef ENABLE_MINING
 SolverCancelledException beamSolverCancelled;
-
+	
 bool BeamHash_III::OptimisedSolve(const blake2b_state& base_state,
                                  const std::function<bool(const std::vector<unsigned char>&)> validBlock,
                                  const std::function<bool(SolverCancelCheck)> cancelled) {
@@ -375,4 +375,5 @@ bool BeamHash_III::OptimisedSolve(const blake2b_state& base_state,
 
 	return false;
 }
+#endif
 
