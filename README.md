@@ -8,12 +8,12 @@ sudo apt-get install build-essential libsodium-dev libboost-system-dev
 
 # Usage
 ````javascript
-var ev = require('bindings')('equihashverify.node');
+var eb = require('bindings')('beamhashverify.node');
 
 var header = new Buffer(..., 'hex');
 var solution = new Buffer(..., 'hex'); //do not include byte size preamble "fd4005"
 
-ev.verify(header, nonce, solution, n, k, r); // default is BeamHashI 150/5/0
+eb.verify(header, nonce, solution, 0); // default is 2=BeamHashIII, 0=BeamHashI, 1=BeamHashII
 //returns boolean
 ````
 
