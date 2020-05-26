@@ -23,6 +23,13 @@ describe('beamhashverify', function () {
         var isValid = beamhash.verify(header, nonceBuffer, solnBuffer, 1);
         assert.equal(isValid, true);
     });
+     it('BeamHashIII Valid', function () {
+        const header = Buffer('990504d96fba29cfd6d9c2f3f8663e511fca10758f33c1e4dea443bbe6c5aac0', 'hex');
+        const nonceBuffer = Buffer('89c94dfd09620712', 'hex');
+        const solnBuffer = Buffer('a4eb00a087831aa944d914c2d500b920b74bb86c9f3a1de38b9a0c5d3c18802ed66c6be4494c0cf7ac4b72e18e6a6ee2e4e842e323f6d8df0367df5b8e36bbd057adf9ec3b1817395ac98b481829fef5c247372eb65acbbed65d64d52e17a0bf9b956bff00000000', 'hex');
+        var isValid = beamhash.verify(header, nonceBuffer, solnBuffer, 2);
+        assert.equal(isValid, true);
+    });
     it('BeamHashII Valid', function () {
         const header = Buffer('57374d5c7384c90858c136b13acfad78e8df608b9cf5e6904d20441f2f6a6cce', 'hex');
         const nonceBuffer = Buffer('29d8de00c38c1e8f', 'hex');
@@ -56,6 +63,27 @@ describe('beamhashverify', function () {
         const nonceBuffer = Buffer('29d8de00c38c1e8f', 'hex');
         var solnBuffer = Buffer('01d9ac87b73590822118395da202170684477c40389140495de7092998c4b59bb0b8f8e86976780af3c704b74f41b66c047fbc7606b0d804295f911bd58c607f8e0736b904c222f090bbb07367d70ba01d8632afd13ff380594f880bc4d84481531146d7c46c2943', 'hex');
         var isValid = beamhash.verify(header, nonceBuffer, solnBuffer, 1);
+        assert.equal(isValid, false);
+    });
+     it('BeamHashIII with invalid headernonce', function () {
+        const header = Buffer('00', 'hex');
+        const nonceBuffer = Buffer('89c94dfd09620712', 'hex');
+        const solnBuffer = Buffer('a4eb00a087831aa944d914c2d500b920b74bb86c9f3a1de38b9a0c5d3c18802ed66c6be4494c0cf7ac4b72e18e6a6ee2e4e842e323f6d8df0367df5b8e36bbd057adf9ec3b1817395ac98b481829fef5c247372eb65acbbed65d64d52e17a0bf9b956bff00000000', 'hex');
+        var isValid = beamhash.verify(header, nonceBuffer, solnBuffer, 2);
+        assert.equal(isValid, false);
+    });
+    it('BeamHashIII with invalid solution', function () {
+        const header = Buffer('990504d96fba29cfd6d9c2f3f8663e511fca10758f33c1e4dea443bbe6c5aac0', 'hex');
+        const nonceBuffer = Buffer('89c94dfd09620712', 'hex');
+        const solnBuffer = Buffer('a5eb00a087831aa944d914c2d500b920b74bb86c9f3a1de38b9a0c5d3c18802ed66c6be4494c0cf7ac4b72e18e6a6ee2e4e842e323f6d8df0367df5b8e36bbd057adf9ec3b1817395ac98b481829fef5c247372eb65acbbed65d64d52e17a0bf9b956bff00000000', 'hex');
+        var isValid = beamhash.verify(header, nonceBuffer, solnBuffer, 2);
+        assert.equal(isValid, false);
+    });
+     it('BeamHashIII with invalid solution', function () {
+        const header = Buffer('990504d96fba29cfd6d9c2f3f8663e511fca10758f33c1e4dea443bbe6c5aac0', 'hex');
+        const nonceBuffer = Buffer('89c94dfd09620712', 'hex');
+        const solnBuffer = Buffer('a4eb00a087831aa944d914c2d500b920b74bb86c9f3a1de38b9a0c5d3c18802ed66c6be4494c0cf7ac4b72e18e6a6ee2e4e842e323f6d8df0367df5b8e36bbd057adf9ec3b1817395ac98b481829fef5c247372eb65acbbed65d64d52e17a0bf9b956bff00000001', 'hex');
+        var isValid = beamhash.verify(header, nonceBuffer, solnBuffer, 2);
         assert.equal(isValid, false);
     });
     it('BEAM Match Difficulty', function () {
