@@ -1,5 +1,5 @@
-# Equihash - BeamHash Implementation
-nodejs native binding to check for valid Equihash solutions
+# BeamHash Implementation
+nodejs native binding to check for valid Beamhash solutions
 
 # Dependencies
 ````
