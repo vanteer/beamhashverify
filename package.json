@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Lolliedieb/beamhashverify"
+    "url": "https://github.com/vanteer/beamhashverify"
   },
   "keywords": [
     "Beam"
@@ -19,13 +19,14 @@
     "Alberto Garoffolo",
     "cronic",
     "LitecoinZ",
-    "mmitech"
+    "mmitech",
+    "vanteer"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Lolliedieb/beamhashverify/issues"
+    "url": "https://github.com/vanteer/beamhashverify/issues"
   },
-  "homepage": "https://github.com/Lolliedieb/beamhashverify",
+  "homepage": "https://github.com/vanteer/beamhashverify",
   "dependencies": {
     "bindings": "*",
     "libsodium": "^0.7.3",
@@ -33,9 +34,15 @@
     "node-gyp": "*"
   },
   "engines": {
-    "node": ">=0.12"
+    "node": ">=14"
   },
   "devDependencies": {
-    "mocha": "^5.0.4"
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "mocha": "^5.0.4",
+    "prettier": "^2.3.1"
   }
 }

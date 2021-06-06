@@ -48,29 +48,30 @@ int verifyBH(const char *hdr, const char *nonceBuffer, const std::vector<unsigne
 }
 
 void Verify(const v8::FunctionCallbackInfo<Value>& args) {
-  Isolate* isolate = Isolate::GetCurrent();
-  HandleScope scope(isolate);
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
 
   // Default to Beam Hash III
   unsigned int PoW = 2;
 
   if (args.Length() < 3) {
   isolate->ThrowException(Exception::TypeError(
-    String::NewFromUtf8(isolate, "Wrong number of arguments")));
+    String::NewFromUtf8(isolate, "Wrong number of arguments").ToLocalChecked()));
   return;
   }
 
-  Local<Object> header = args[0]->ToObject();
-  Local<Object> nonce = args[1]->ToObject();
-  Local<Object> solution = args[2]->ToObject();
+  Local<Object> header = args[0]->ToObject(context).ToLocalChecked();
+  Local<Object> nonce = args[1]->ToObject(context).ToLocalChecked();
+  Local<Object> solution = args[2]->ToObject(context).ToLocalChecked();
 
   if (args.Length() == 4) {
-    PoW = args[3]->Uint32Value();
+    PoW = args[3]->ToInt32(Nan::GetCurrentContext()).ToLocalChecked()->Value();
   }
 
   if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution) || !node::Buffer::HasInstance(nonce) ) {
   isolate->ThrowException(Exception::TypeError(
-    String::NewFromUtf8(isolate, "Arguments should be buffer objects.")));
+    String::NewFromUtf8(isolate, "Arguments should be buffer objects.").ToLocalChecked()));
   return;
   }
 
@@ -92,24 +93,26 @@ void Verify(const v8::FunctionCallbackInfo<Value>& args) {
 
 void VerifyDiff(const v8::FunctionCallbackInfo<Value> &args)
 {
-  Isolate *isolate = Isolate::GetCurrent();
-  HandleScope scope(isolate);
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+  
   if (args.Length() < 2)
   {
     isolate->ThrowException(Exception::TypeError(
-        String::NewFromUtf8(isolate, "Wrong number of arguments")));
+        String::NewFromUtf8(isolate, "Wrong number of arguments").ToLocalChecked()));
     return;
   }
   unsigned int diff = 0;
 
-  Local<Object> solution = args[0]->ToObject();
+  Local<Object> solution = args[0]->ToObject(context).ToLocalChecked();
+
   if (!node::Buffer::HasInstance(solution))
   {
     isolate->ThrowException(Exception::TypeError(
-        String::NewFromUtf8(isolate, "Argument should be buffer objects.")));
+        String::NewFromUtf8(isolate, "Argument should be buffer objects.").ToLocalChecked()));
     return;
   }
-  diff = args[1]->Uint32Value();
+  diff = args[1]->ToInt32(Nan::GetCurrentContext()).ToLocalChecked()->Value();
 
   const char *soln = node::Buffer::Data(solution);
   std::vector<unsigned char> vecSolution(soln, soln + node::Buffer::Length(solution));
@@ -121,7 +124,7 @@ void VerifyDiff(const v8::FunctionCallbackInfo<Value> &args)
   args.GetReturnValue().Set(result);
 }
 
-void Init(Handle<Object> exports)
+void Init(Local<Object> exports)
 {
   NODE_SET_METHOD(exports, "verify", Verify);
   NODE_SET_METHOD(exports, "verifyDiff", VerifyDiff);
